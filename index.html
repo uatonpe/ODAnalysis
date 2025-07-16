@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANIK Financial Services - Professional Dashboard</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #343a40; margin: 0; padding: 20px; }
+        .container { max-width: 1600px; margin: auto; background: #fff; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        header { background: linear-gradient(135deg, #0d47a1, #1e88e5); color: white; padding: 30px; border-top-left-radius: 15px; border-top-right-radius: 15px; }
+        header h1 { margin: 0; font-size: 2.5em; font-weight: 700; }
+        header p { margin: 8px 0 0; opacity: 0.9; font-size: 1.2em; }
+        .content { padding: 30px; }
+        .data-input-section { background-color: #e3f2fd; border: 2px dashed #1e88e5; padding: 25px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
+        #data-input-area { width: 98%; height: 120px; padding: 10px; font-family: monospace; border: 1px solid #b0bec5; border-radius: 8px; margin-bottom: 15px; }
+        #analyze-btn { background: linear-gradient(135deg, #43a047, #66bb6a); color: white; border: none; padding: 14px 30px; border-radius: 8px; cursor: pointer; font-size: 1.2em; font-weight: 600; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #analyze-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+        .kpi-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 35px; }
+        .kpi-card { color: white; padding: 25px; border-radius: 15px; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
+        .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
+        .kpi-card .card-content { z-index: 2; position: relative; }
+        .kpi-card h3 { margin: 0 0 10px; font-size: 1.1em; font-weight: 500; opacity: 0.9; }
+        .kpi-card .value { font-size: 2.8em; font-weight: 700; line-height: 1.2; }
+        .kpi-card .icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 4.5em; opacity: 0.15; z-index: 1; }
+        .kpi-blue { background: #1e88e5; }
+        .kpi-red { background: #e53935; }
+        .kpi-orange { background: #fb8c00; }
+        .kpi-green { background: #43a047; }
+        .section { margin-bottom: 35px; }
+        .section h2 { color: #0d47a1; border-bottom: 3px solid #1e88e5; padding-bottom: 15px; margin-top: 0; font-size: 1.8em; font-weight: 600; }
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+        th, td { padding: 16px; text-align: left; border-bottom: 1px solid #eef2f7; }
+        th { background-color: #455a64; color: white; font-weight: 500; font-size: 1.05em; }
+        .hidden { display: none; }
+        .key-points-section { background-color: #fff8e1; border-left: 6px solid #ffab00; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .key-points-section h3 { margin-top: 0; color: #c66900; font-size: 1.3em; font-weight: 600; }
+        .key-points-section ul { list-style-type: none; padding-left: 0; margin-top: 15px; }
+        .key-points-section li { padding: 10px 0 10px 35px; position: relative; font-size: 1.05em; }
+        .key-points-section li::before { content: '🎯'; color: #0d47a1; position: absolute; left: 0; font-size: 1.4em; }
+        .print-section { text-align: center; margin-top: 40px; }
+        #print-btn { background: linear-gradient(135deg, #546e7a, #37474f); color: white; border: none; padding: 15px 40px; font-size: 1.3em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        #print-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.25); }
+        .risk-high { color: #d32f2f; font-weight: 600; }
+        .risk-critical { background-color: #c62828 !important; color: white !important; font-weight: bold; }
+        .chart-container { width: 100%; min-height: 420px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+        @media (max-width: 1200px) { .grid-container { grid-template-columns: 1fr; } }
+        
+        /* *** PRINT STYLES - FINAL & PERFECTED *** */
+        @media print {
+            @page {
+                size: A4;
+                margin: 10mm; /* *** Minimum Margin Set *** */
+            }
+            body { background-color: #fff !important; font-size: 9pt; -webkit-print-color-adjust: exact; color-adjust: exact; }
+            .container { box-shadow: none; border: none; }
+            .data-input-section, #print-btn { display: none; }
+            .content { padding: 0; }
+            header { background: #fff !important; color: #000 !important; text-align: left; padding: 10px 0; border-bottom: 2px solid #0d47a1; page-break-after: avoid; }
+            header h1 { font-size: 18pt; color: #0d47a1; } header p { font-size: 11pt; }
+            .kpi-dashboard { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+            .kpi-card { color: white !important; box-shadow: none; border-radius: 8px; padding: 12px; }
+            .kpi-card.kpi-red { background-color: #e53935 !important; }
+            .kpi-card.kpi-blue { background-color: #1e88e5 !important; }
+            .kpi-card.kpi-orange { background-color: #fb8c00 !important; }
+            .kpi-card.kpi-green { background-color: #43a047 !important; }
+            .kpi-card h3 { font-size: 9pt; height: auto; margin-bottom: 5px;} .kpi-card .value { font-size: 16pt; } .kpi-card .icon { display: none; }
+            .section { page-break-inside: avoid; margin-bottom: 20px; }
+            .section h2 { font-size: 14pt; margin-bottom: 10px; }
+            .grid-container { display: block !important; }
+            .grid-container > div { margin-bottom: 20px; }
+            table { font-size: 8.5pt; }
+            th { background-color: #455a64 !important; }
+            th, td { padding: 6px; }
+            .key-points-section { background: #fffde7 !important; border-left-color: #ffab00 !important; padding: 15px;}
+            .key-points-section li {font-size: 1em;}
+            .chart-container { height: 280px !important; box-shadow: none; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ANIK Financial Services - ओव्हरड्यू ॲनालिसिस डॅशबोर्ड</h1>
+            <p>युनिट: <strong id="unit-name">N/A</strong> | रिपोर्ट दिनांक: <span id="report-date"></span></p>
+        </header>
+        <div class="content">
+            <div class="data-input-section">
+                <h3>तुमचा रिपोर्ट डेटा येथे पेस्ट करा</h3>
+                <textarea id="data-input-area" placeholder="तुमच्या एक्सेल रिपोर्टमधील संपूर्ण डेटा (headers सहित) येथे पेस्ट करा..."></textarea>
+                <button id="analyze-btn">विश्लेषण करा</button>
+            </div>
+            <div id="report-content" class="hidden">
+                <div class="section">
+                    <div class="grid-container" id="summary-grid">
+                        <div id="kpi-container-wrapper">
+                            <h2>डॅशबोर्ड (Key Performance Indicators)</h2>
+                            <div class="kpi-dashboard" id="kpi-container"></div>
+                        </div>
+                        <div class="key-points-section" id="manager-points-wrapper">
+                            <h2>व्यवस्थापकांसाठी मुख्य मुद्दे</h2>
+                            <div id="manager-points"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section" id="graphical-section">
+                    <h2>ग्राफिकल विश्लेषण (Graphical Analysis)</h2>
+                    <div class="grid-container">
+                        <div id="pie_chart_div" class="chart-container"></div>
+                        <div id="cv_chart_div" class="chart-container"></div>
+                    </div>
+                </div>
+                <div id="detailed-analysis-section" class="section">
+                    <h2>सखोल विश्लेषण (Detailed Analysis)</h2>
+                     <div class="grid-container">
+                        <div>
+                            <h3>सर्वाधिक थकबाकी असलेली ५ गावे</h3>
+                            <table>
+                                <thead><tr><th>गाव (Village)</th><th>थकीत खाती</th><th>एकूण थकबाकी</th></tr></thead>
+                                <tbody id="top-villages-body"></tbody>
+                            </table>
+                        </div>
+                        <div>
+                           <h3>थकीत दिवसांनुसार विश्लेषण</h3>
+                           <table>
+                               <thead><tr><th>थकीत दिवस</th><th>खाती</th><th>थकबाकी</th><th>जोखीम</th></tr></thead>
+                               <tbody id="aging-table-body"></tbody>
+                           </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="top-customers-section" class="section">
+                    <h2>सर्वाधिक थकबाकी असलेले १० ग्राहक (Top 10 High-Risk Customers)</h2>
+                    <table>
+                        <thead><tr><th>ग्राहक</th><th>थकबाकी</th><th>गाव</th><th>मोबाईल</th><th>लोन आयडी</th></tr></thead>
+                        <tbody id="top-customers-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="cv-performance-section" class="section">
+                    <h2>फील्ड ऑफिसर (CV) कामगिरी (CV Performance)</h2>
+                    <table>
+                        <thead><tr><th>फील्ड ऑफिसर (CV)</th><th>एकूण थकबाकी</th><th>थकीत खाती</th></tr></thead>
+                        <tbody id="cv-performance-table-body"></tbody>
+                    </table>
+                </div>
+                <div class="print-section">
+                    <button id="print-btn" onclick="window.print()">🖨️ प्रिंट / सेव्ह रिपोर्ट</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    google.charts.load('current', {'packages':['corechart']});
+    
+    document.getElementById('analyze-btn').addEventListener('click', () => {
+        const pasteData = document.getElementById('data-input-area').value.trim();
+        if (!pasteData) { alert("कृपया बॉक्समध्ये डेटा पेस्ट करा."); return; }
+        try {
+            const lines = pasteData.split('\n');
+            const headersRaw = lines[0].split('\t');
+            const headers = headersRaw.map(h => h.trim().toUpperCase());
+            const requiredHeaders = ['OVERDUE PRINCIPAL', 'OD DAYS', 'CV', 'CUSTOMER NAME', 'VILLAGE', 'MOBILE NO', 'LOAN NO', 'BRANCH'];
+            const missingHeaders = requiredHeaders.filter(rh => !headers.includes(rh));
+            if (missingHeaders.length > 0) { alert(`त्रुटी: डेटामध्ये आवश्यक रकाने सापडले नाहीत: \n${missingHeaders.join('\n')}`); return; }
+            const data = lines.slice(1).map(line => {
+                const values = line.split('\t');
+                const row = {};
+                headers.forEach((header, index) => { row[header] = values[index]; });
+                return row;
+            });
+            processData(data);
+            document.getElementById('report-content').classList.remove('hidden');
+        } catch (e) { console.error(e); alert("डेटावर प्रक्रिया करताना त्रुटी आली."); }
+    });
+
+    function formatCurrency(num) { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(num); }
+    function formatNumber(num) { return num.toLocaleString('en-IN'); }
+
+    function processData(data) {
+        const overdueAccounts = data.filter(row => parseFloat(row['OVERDUE PRINCIPAL'] || 0) > 0);
+        let totalOverdue = 0;
+        const totalOverdueAccountsCount = overdueAccounts.length;
+        const cvPerformance = {}, aging = {'1-30': {count:0, amount:0}, '31-60': {count:0, amount:0}, '61-90': {count:0, amount:0}, '91+': {count:0, amount:0}}, villagePerformance = {};
+        let unitName = data.length > 0 ? data[0]['BRANCH'] : 'N/A';
+        
+        document.getElementById('unit-name').textContent = unitName;
+        document.getElementById('report-date').textContent = new Date().toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        const reportContent = document.getElementById('report-content');
+        const sections = ['summary-grid', 'graphical-section', 'detailed-analysis-section', 'top-customers-section', 'cv-performance-section'];
+
+        if (totalOverdueAccountsCount === 0) {
+            reportContent.classList.remove('hidden');
+            sections.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+            document.getElementById('manager-points-wrapper').style.display = 'block';
+            document.getElementById('manager-points').innerHTML = `<h3>अभिनंदन!</h3><ul><li>तुमच्या पोर्टफोलिओमध्ये सध्या कोणतीही थकबाकी नाही. ही एक उत्कृष्ट कामगिरी आहे.</li></ul>`;
+            document.getElementById('kpi-container-wrapper').style.display = 'block';
+            document.getElementById('kpi-container').innerHTML = `<div class="kpi-card kpi-green"><div class="card-content"><h3>एकुण ओडी खाती</h3><div class="value">0</div></div><div class="icon">✅</div></div>`;
+            return;
+        } else {
+             sections.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = ''; });
+        }
+
+        overdueAccounts.forEach(row => {
+            const overdueAmount = parseFloat(row['OVERDUE PRINCIPAL'] || 0);
+            const odDays = parseInt(row['OD DAYS'] || 0);
+            const cvName = row['CV'] || 'N/A';
+            const villageName = row['VILLAGE'] || 'N/A';
+            totalOverdue += overdueAmount;
+            if (odDays <= 30) { aging['1-30'].count++; aging['1-30'].amount += overdueAmount; }
+            else if (odDays <= 60) { aging['31-60'].count++; aging['31-60'].amount += overdueAmount; }
+            else if (odDays <= 90) { aging['61-90'].count++; aging['61-90'].amount += overdueAmount; }
+            else { aging['91+'].count++; aging['91+'].amount += overdueAmount; }
+            if (!cvPerformance[cvName]) cvPerformance[cvName] = { count: 0, amount: 0 };
+            cvPerformance[cvName].count++; cvPerformance[cvName].amount += overdueAmount;
+            if (!villagePerformance[villageName]) villagePerformance[villageName] = { count: 0, amount: 0 };
+            villagePerformance[villageName].count++; villagePerformance[villageName].amount += overdueAmount;
+        });
+
+        const avgOverdue = totalOverdue / totalOverdueAccountsCount;
+        const par90PlusAmount = aging['91+'].amount;
+        const par90PlusPercentage = totalOverdue > 0 ? (par90PlusAmount / totalOverdue) * 100 : 0;
+
+        document.getElementById('kpi-container').innerHTML = `<div class="kpi-card kpi-blue"><div class="card-content"><h3>एकुण ओडी खाती</h3><div class="value">${formatNumber(totalOverdueAccountsCount)}</div></div><div class="icon">👥</div></div><div class="kpi-card kpi-red"><div class="card-content"><h3>एकुण ओडी रक्कम</h3><div class="value">${formatCurrency(totalOverdue)}</div></div><div class="icon">💰</div></div><div class="kpi-card kpi-orange"><div class="card-content"><h3>सरासरी थकबाकी</h3><div class="value">${formatCurrency(avgOverdue)}</div></div><div class="icon">📊</div></div><div class="kpi-card kpi-red"><div class="card-content"><h3>90+ दिवस थकबाकी %</h3><div class="value">${par90PlusPercentage.toFixed(2)}%</div></div><div class="icon">📈</div></div>`;
+
+        const cvArray = Object.keys(cvPerformance).map(key => ({ name: key, ...cvPerformance[key] })).sort((a, b) => b.amount - a.amount);
+        const topCV = cvArray[0] || {name: 'N/A'};
+        const topVillages = Object.keys(villagePerformance).map(key => ({ name: key, ...villagePerformance[key] })).sort((a,b) => b.amount - a.amount);
+        const topVillage = topVillages[0] || {name: 'N/A'};
+        const topCustomers = overdueAccounts.sort((a, b) => parseFloat(b['OVERDUE PRINCIPAL'] || 0) - parseFloat(a['OVERDUE PRINCIPAL'] || 0));
+        const topCustomer = topCustomers[0] || {'CUSTOMER NAME': 'N/A'};
+        
+        let managerHTML = `<h3>पोर्टफोलिओ गुणवत्ता (Portfolio Quality)</h3><ul><li><strong>कर्ज मंजूरीतील शिस्त:</strong> भविष्यातील थकबाकी टाळण्यासाठी, कर्ज मंजूर करताना ग्राहकाची परतफेड क्षमता आणि पूर्वीचा इतिहास कसून तपासावा.</li></ul>`;
+        managerHTML += (par90PlusAmount > 0) ? `<h3>थकीत व्यवस्थापन (Delinquency Management)</h3><ul><li><strong>गंभीर खात्यांवर लक्ष:</strong> 90+ दिवसांच्या श्रेणीतील <strong>${formatNumber(aging['91+'].count)}</strong> खाती ही सर्वाधिक प्राधान्याची आहेत. या <strong>${formatCurrency(par90PlusAmount)}</strong> रकमेच्या वसुलीसाठी एक विशेष योजना तयार करा.</li><li><strong>निष्पक्ष वसुली पद्धती:</strong> RBI च्या 'Fair Practice Code' नुसार, ग्राहकांना त्रास न देता, सन्मानपूर्वक आणि योग्य वेळेतच वसुलीची प्रक्रिया राबवावी.</li></ul>` : `<h3>थकीत व्यवस्थापन (Delinquency Management)</h3><ul><li><strong>उत्कृष्ट कामगिरी:</strong> तुमच्या शाखेत 90+ दिवसांची कोणतीही थकबाकी नाही, हे कौतुकास्पद आहे. ही कामगिरी कायम ठेवण्यासाठी प्रयत्नशील रहा.</li></ul>`;
+        managerHTML += `<h3>क्षेत्र-विशिष्ट कृती (Field-Specific Actions)</h3><ul><li><strong>गाव-विशिष्ट लक्ष:</strong> <span class="risk-high">'${topVillage.name}'</span> सारख्या सर्वाधिक थकबाकी असलेल्या गावांमध्ये वसुलीसाठी विशेष मोहीम राबवा.</li><li><strong>उच्च-मूल्य ग्राहक भेट:</strong> <span class="risk-high">'${topCustomer['CUSTOMER NAME']}'</span> सारख्या सर्वाधिक थकबाकी असलेल्या ग्राहकांना वैयक्तिकरित्या भेटा आणि त्यांच्या समस्येवर तोडगा काढा.</li></ul>`;
+        managerHTML += `<h3>कर्मचारी व्यवस्थापन (Team Management)</h3><ul><li><strong>कामगिरीचा आढावा:</strong> <span class="risk-high">'${topCV.name}'</span> यांच्या कामगिरीचा विशेष आढावा घ्या आणि त्यांना वसुलीसाठी आवश्यक असलेले सहकार्य करा.</li><li><strong>प्रशिक्षण आणि प्रोत्साहन:</strong> ग्राहकांशी संवाद कसा साधावा आणि संभाव्य थकबाकी कशी ओळखावी, याचे नियमित प्रशिक्षण CVs ना द्यावे. चांगली कामगिरी करणाऱ्यांना प्रोत्साहन द्यावे.</li></ul>`;
+        document.getElementById('manager-points').innerHTML = managerHTML;
+
+        document.getElementById('aging-table-body').innerHTML = `<tr><td>1-30 दिवस</td><td>${formatNumber(aging['1-30'].count)}</td><td>${formatCurrency(aging['1-30'].amount)}</td><td>कमी</td></tr><tr><td>31-60 दिवस</td><td>${formatNumber(aging['31-60'].count)}</td><td>${formatCurrency(aging['31-60'].amount)}</td><td>मध्यम</td></tr><tr><td>61-90 दिवस</td><td>${formatNumber(aging['61-90'].count)}</td><td>${formatCurrency(aging['61-90'].amount)}</td><td class="risk-high">उच्च</td></tr><tr class="risk-critical"><td>90+ दिवस</td><td>${formatNumber(aging['91+'].count)}</td><td>${formatCurrency(aging['91+'].amount)}</td><td>गंभीर</td></tr>`;
+        document.getElementById('top-villages-body').innerHTML = topVillages.slice(0, 5).map(v => `<tr><td>${v.name}</td><td>${formatNumber(v.count)}</td><td class="risk-high">${formatCurrency(v.amount)}</td></tr>`).join('');
+        document.getElementById('top-customers-table-body').innerHTML = topCustomers.slice(0, 10).map(row => `<tr><td>${row['CUSTOMER NAME']}</td><td class="risk-high">${formatCurrency(parseFloat(row['OVERDUE PRINCIPAL']))}</td><td>${row['VILLAGE']}</td><td>${row['MOBILE NO']}</td><td>${row['LOAN NO']}</td></tr>`).join('');
+        document.getElementById('cv-performance-table-body').innerHTML = cvArray.map(cv => `<tr><td>${cv.name}</td><td class="risk-high">${formatCurrency(cv.amount)}</td><td>${formatNumber(cv.count)}</td></tr>`).join('');
+        
+        google.charts.setOnLoadCallback(() => {
+            drawPieChart(aging);
+            drawCVChart(cvArray.slice(0, 7));
+        });
+    }
+
+    function drawPieChart(agingData) {
+        var data = google.visualization.arrayToDataTable([
+          ['थकीत श्रेणी', 'थकबाकी रक्कम'],
+          ['1-30 दिवस', agingData['1-30'].amount], ['31-60 दिवस', agingData['31-60'].amount],
+          ['61-90 दिवस', agingData['61-90'].amount], ['90+ दिवस', agingData['91+'].amount]
+        ]);
+        var options = { title: 'थकबाकीचे वर्गीकरण (रक्कम)', pieHole: 0.4, colors: ['#42a5f5', '#ffca28', '#ff7043', '#e53935'], legend: { position: 'bottom' }, chartArea: {width: '90%', height: '75%'}, fontName: 'Poppins' };
+        var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));
+        chart.draw(data, options);
+    }
+    
+    function drawCVChart(cvData) {
+        let chartData = [['फील्ड ऑफिसर (CV)', 'थकबाकी रक्कम', { role: 'style' }]];
+        const colors = ['#d32f2f', '#ff7043', '#ffca28', '#66bb6a', '#42a5f5', '#7e57c2', '#26a69a'];
+        cvData.forEach((cv, index) => { chartData.push([cv.name, cv.amount, colors[index % colors.length]]); });
+        var data = google.visualization.arrayToDataTable(chartData);
+        var options = { title: 'फील्ड ऑफिसर कामगिरी (सर्वाधिक थकबाकी)', chartArea: {width: '85%', height: '70%'}, vAxis: { title: 'थकबाकी रक्कम (₹)', format: 'short' }, hAxis: { title: 'फील्ड ऑफिसर' }, legend: { position: 'none' }, fontName: 'Poppins' };
+        var chart = new google.visualization.ColumnChart(document.getElementById('cv_chart_div'));
+        chart.draw(data, options);
+    }
+    </script>
+</body>
+</html>

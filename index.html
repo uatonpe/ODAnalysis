@@ -46,17 +46,16 @@
         .risk-high { color: #d32f2f; font-weight: 600; }
         .risk-critical { background-color: #c62828 !important; color: white !important; font-weight: bold; }
         .chart-container { width: 100%; min-height: 420px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+        #back-to-dashboard-btn { background: #607d8b; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; margin-bottom: 20px; }
+        #back-to-dashboard-btn:hover { background: #455a64; }
+        
         @media (max-width: 1200px) { .grid-container { grid-template-columns: 1fr; } }
         
-        /* *** PRINT STYLES - FINAL & PERFECTED *** */
         @media print {
-            @page {
-                size: A4;
-                margin: 10mm; /* *** Minimum Margin Set *** */
-            }
+            @page { size: A4; margin: 10mm; }
             body { background-color: #fff !important; font-size: 9pt; -webkit-print-color-adjust: exact; color-adjust: exact; }
             .container { box-shadow: none; border: none; }
-            .data-input-section, #print-btn { display: none; }
+            .data-input-section, #print-btn, #cv-detail-section, #back-to-dashboard-btn { display: none !important; }
             .content { padding: 0; }
             header { background: #fff !important; color: #000 !important; text-align: left; padding: 10px 0; border-bottom: 2px solid #0d47a1; page-break-after: avoid; }
             header h1 { font-size: 18pt; color: #0d47a1; } header p { font-size: 11pt; }
@@ -92,68 +91,92 @@
                 <textarea id="data-input-area" placeholder="तुमच्या एक्सेल रिपोर्टमधील संपूर्ण डेटा (headers सहित) येथे पेस्ट करा..."></textarea>
                 <button id="analyze-btn">विश्लेषण करा</button>
             </div>
-            <div id="report-content" class="hidden">
-                <div class="section">
-                    <div class="grid-container" id="summary-grid">
-                        <div id="kpi-container-wrapper">
-                            <h2>डॅशबोर्ड (Key Performance Indicators)</h2>
-                            <div class="kpi-dashboard" id="kpi-container"></div>
-                        </div>
-                        <div class="key-points-section" id="manager-points-wrapper">
-                            <h2>व्यवस्थापकांसाठी मुख्य मुद्दे</h2>
-                            <div id="manager-points"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="section" id="graphical-section">
-                    <h2>ग्राफिकल विश्लेषण (Graphical Analysis)</h2>
-                    <div class="grid-container">
-                        <div id="pie_chart_div" class="chart-container"></div>
-                        <div id="cv_chart_div" class="chart-container"></div>
-                    </div>
-                </div>
-                <div id="detailed-analysis-section" class="section">
-                    <h2>सखोल विश्लेषण (Detailed Analysis)</h2>
-                     <div class="grid-container">
-                        <div>
-                            <h3>सर्वाधिक थकबाकी असलेली ५ गावे</h3>
-                            <table>
-                                <thead><tr><th>गाव (Village)</th><th>थकीत खाती</th><th>एकूण थकबाकी</th></tr></thead>
-                                <tbody id="top-villages-body"></tbody>
-                            </table>
-                        </div>
-                        <div>
-                           <h3>थकीत दिवसांनुसार विश्लेषण</h3>
-                           <table>
-                               <thead><tr><th>थकीत दिवस</th><th>खाती</th><th>थकबाकी</th><th>जोखीम</th></tr></thead>
-                               <tbody id="aging-table-body"></tbody>
-                           </table>
+
+            <div id="main-dashboard-content">
+                <div id="report-content" class="hidden">
+                    <div class="section">
+                        <div class="grid-container" id="summary-grid">
+                            <div id="kpi-container-wrapper">
+                                <h2>डॅशबोर्ड (Key Performance Indicators)</h2>
+                                <div class="kpi-dashboard" id="kpi-container"></div>
+                            </div>
+                            <div class="key-points-section" id="manager-points-wrapper">
+                                <h2>व्यवस्थापकांसाठी मुख्य मुद्दे</h2>
+                                <div id="manager-points"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div id="top-customers-section" class="section">
-                    <h2>सर्वाधिक थकबाकी असलेले १० ग्राहक (Top 10 High-Risk Customers)</h2>
-                    <table>
-                        <thead><tr><th>ग्राहक</th><th>थकबाकी</th><th>गाव</th><th>मोबाईल</th><th>लोन आयडी</th></tr></thead>
-                        <tbody id="top-customers-table-body"></tbody>
-                    </table>
-                </div>
-                <div id="cv-performance-section" class="section">
-                    <h2>फील्ड ऑफिसर (CV) कामगिरी (CV Performance)</h2>
-                    <table>
-                        <thead><tr><th>फील्ड ऑफिसर (CV)</th><th>एकूण थकबाकी</th><th>थकीत खाती</th></tr></thead>
-                        <tbody id="cv-performance-table-body"></tbody>
-                    </table>
-                </div>
-                <div class="print-section">
-                    <button id="print-btn" onclick="window.print()">🖨️ प्रिंट / सेव्ह रिपोर्ट</button>
+                    <div class="section" id="graphical-section">
+                        <h2>ग्राफिकल विश्लेषण (Graphical Analysis)</h2>
+                        <div class="grid-container">
+                            <div id="pie_chart_div" class="chart-container"></div>
+                            <div id="cv_chart_div" class="chart-container"></div>
+                        </div>
+                    </div>
+                    <div id="detailed-analysis-section" class="section">
+                        <h2>सखोल विश्लेषण (Detailed Analysis)</h2>
+                         <div class="grid-container">
+                            <div>
+                                <h3>सर्वाधिक थकबाकी असलेली ५ गावे</h3>
+                                <table>
+                                    <thead><tr><th>गाव (Village)</th><th>थकीत खाती</th><th>एकूण थकबाकी</th></tr></thead>
+                                    <tbody id="top-villages-body"></tbody>
+                                </table>
+                            </div>
+                            <div>
+                               <h3>थकीत दिवसांनुसार विश्लेषण</h3>
+                               <table>
+                                   <thead><tr><th>थकीत दिवस</th><th>खाती</th><th>थकबाकी</th><th>जोखीम</th></tr></thead>
+                                   <tbody id="aging-table-body"></tbody>
+                               </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="top-customers-section" class="section">
+                        <h2>सर्वाधिक थकबाकी असलेले १० ग्राहक (Top 10 High-Risk Customers)</h2>
+                        <table>
+                            <thead><tr><th>ग्राहक</th><th>थकबाकी</th><th>गाव</th><th>मोबाईल</th><th>लोन आयडी</th></tr></thead>
+                            <tbody id="top-customers-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="cv-performance-section" class="section">
+                        <h2>फील्ड ऑफिसर (CV) कामगिरी (CV Performance)</h2>
+                        <table>
+                            <thead><tr><th>फील्ड ऑफिसर (CV)</th><th>एकूण थकबाकी</th><th>थकीत खाती</th></tr></thead>
+                            <tbody id="cv-performance-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="print-section">
+                        <button id="print-btn" onclick="window.print()">🖨️ प्रिंट / सेव्ह रिपोर्ट</button>
+                    </div>
                 </div>
             </div>
+
+            <!-- CV Detail Section (Initially Hidden) -->
+            <div id="cv-detail-section" class="section hidden">
+                <button id="back-to-dashboard-btn">⬅️ डॅशबोर्डवर परत जा</button>
+                <h2 id="cv-detail-title"></h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ग्राहक नाव (Customer Name)</th>
+                            <th>लोन नं. (Loan No)</th>
+                            <th>थकीत रक्कम (Overdue)</th>
+                            <th>मोबाईल (Mobile)</th>
+                            <th>गाव (Village)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cv-detail-table-body"></tbody>
+                </table>
+            </div>
+
         </div>
     </div>
     <script>
     google.charts.load('current', {'packages':['corechart']});
-    
+
+    let fullCVData = {}; // Global variable to store detailed CV data
+
     document.getElementById('analyze-btn').addEventListener('click', () => {
         const pasteData = document.getElementById('data-input-area').value.trim();
         if (!pasteData) { alert("कृपया बॉक्समध्ये डेटा पेस्ट करा."); return; }
@@ -164,25 +187,39 @@
             const requiredHeaders = ['OVERDUE PRINCIPAL', 'OD DAYS', 'CV', 'CUSTOMER NAME', 'VILLAGE', 'MOBILE NO', 'LOAN NO', 'BRANCH'];
             const missingHeaders = requiredHeaders.filter(rh => !headers.includes(rh));
             if (missingHeaders.length > 0) { alert(`त्रुटी: डेटामध्ये आवश्यक रकाने सापडले नाहीत: \n${missingHeaders.join('\n')}`); return; }
+            
             const data = lines.slice(1).map(line => {
                 const values = line.split('\t');
                 const row = {};
                 headers.forEach((header, index) => { row[header] = values[index]; });
                 return row;
-            });
+            }).filter(row => row['CUSTOMER NAME']); // Filter out empty rows
+
             processData(data);
             document.getElementById('report-content').classList.remove('hidden');
-        } catch (e) { console.error(e); alert("डेटावर प्रक्रिया करताना त्रुटी आली."); }
+            document.getElementById('main-dashboard-content').classList.remove('hidden');
+            document.getElementById('cv-detail-section').classList.add('hidden'); // Ensure detail is hidden on new analysis
+        } catch (e) { console.error(e); alert("डेटावर प्रक्रिया करताना त्रुटी आली. कृपया डेटा फॉरमॅट तपासा."); }
+    });
+
+    document.getElementById('back-to-dashboard-btn').addEventListener('click', () => {
+        document.getElementById('cv-detail-section').classList.add('hidden');
+        document.getElementById('main-dashboard-content').classList.remove('hidden');
+        window.scrollTo(0, 0); // Scroll to top
     });
 
     function formatCurrency(num) { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(num); }
     function formatNumber(num) { return num.toLocaleString('en-IN'); }
 
     function processData(data) {
+        fullCVData = {}; // Reset CV data on new analysis
         const overdueAccounts = data.filter(row => parseFloat(row['OVERDUE PRINCIPAL'] || 0) > 0);
+        
         let totalOverdue = 0;
         const totalOverdueAccountsCount = overdueAccounts.length;
-        const cvPerformance = {}, aging = {'1-30': {count:0, amount:0}, '31-60': {count:0, amount:0}, '61-90': {count:0, amount:0}, '91+': {count:0, amount:0}}, villagePerformance = {};
+        const cvPerformance = {};
+        const aging = {'1-30': {count:0, amount:0}, '31-60': {count:0, amount:0}, '61-90': {count:0, amount:0}, '91+': {count:0, amount:0}};
+        const villagePerformance = {};
         let unitName = data.length > 0 ? data[0]['BRANCH'] : 'N/A';
         
         document.getElementById('unit-name').textContent = unitName;
@@ -209,14 +246,22 @@
             const cvName = row['CV'] || 'N/A';
             const villageName = row['VILLAGE'] || 'N/A';
             totalOverdue += overdueAmount;
+
             if (odDays <= 30) { aging['1-30'].count++; aging['1-30'].amount += overdueAmount; }
             else if (odDays <= 60) { aging['31-60'].count++; aging['31-60'].amount += overdueAmount; }
             else if (odDays <= 90) { aging['61-90'].count++; aging['61-90'].amount += overdueAmount; }
             else { aging['91+'].count++; aging['91+'].amount += overdueAmount; }
+
             if (!cvPerformance[cvName]) cvPerformance[cvName] = { count: 0, amount: 0 };
-            cvPerformance[cvName].count++; cvPerformance[cvName].amount += overdueAmount;
+            cvPerformance[cvName].count++;
+            cvPerformance[cvName].amount += overdueAmount;
+
+            if (!fullCVData[cvName]) fullCVData[cvName] = [];
+            fullCVData[cvName].push(row);
+
             if (!villagePerformance[villageName]) villagePerformance[villageName] = { count: 0, amount: 0 };
-            villagePerformance[villageName].count++; villagePerformance[villageName].amount += overdueAmount;
+            villagePerformance[villageName].count++;
+            villagePerformance[villageName].amount += overdueAmount;
         });
 
         const avgOverdue = totalOverdue / totalOverdueAccountsCount;
@@ -245,7 +290,7 @@
         
         google.charts.setOnLoadCallback(() => {
             drawPieChart(aging);
-            drawCVChart(cvArray.slice(0, 7));
+            drawCVChart(cvArray.slice(0, 10)); // Show top 10 CVs in chart
         });
     }
 
@@ -262,12 +307,60 @@
     
     function drawCVChart(cvData) {
         let chartData = [['फील्ड ऑफिसर (CV)', 'थकबाकी रक्कम', { role: 'style' }]];
-        const colors = ['#d32f2f', '#ff7043', '#ffca28', '#66bb6a', '#42a5f5', '#7e57c2', '#26a69a'];
+        const colors = ['#d32f2f', '#ff7043', '#ffca28', '#66bb6a', '#42a5f5', '#7e57c2', '#26a69a', '#ef5350', '#ff9800', '#8d6e63'];
         cvData.forEach((cv, index) => { chartData.push([cv.name, cv.amount, colors[index % colors.length]]); });
+        
         var data = google.visualization.arrayToDataTable(chartData);
-        var options = { title: 'फील्ड ऑफिसर कामगिरी (सर्वाधिक थकबाकी)', chartArea: {width: '85%', height: '70%'}, vAxis: { title: 'थकबाकी रक्कम (₹)', format: 'short' }, hAxis: { title: 'फील्ड ऑफिसर' }, legend: { position: 'none' }, fontName: 'Poppins' };
+        var options = { 
+            title: 'फील्ड ऑफिसर कामगिरी (सर्वाधिक थकबाकी) - तपशिलासाठी बारवर क्लिक करा', 
+            chartArea: {width: '85%', height: '70%'}, 
+            vAxis: { title: 'थकबाकी रक्कम (₹)', format: 'short' }, 
+            hAxis: { title: 'फील्ड ऑफिसर' }, 
+            legend: { position: 'none' }, 
+            fontName: 'Poppins' 
+        };
         var chart = new google.visualization.ColumnChart(document.getElementById('cv_chart_div'));
+
+        // Add a 'select' event listener to the chart.
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+        
+        function selectHandler() {
+            var selection = chart.getSelection();
+            if (selection.length > 0) {
+                var rowIndex = selection[0].row;
+                var cvName = data.getValue(rowIndex, 0);
+                showCVDetails(cvName);
+            }
+        }
+        
         chart.draw(data, options);
+    }
+
+    function showCVDetails(cvName) {
+        const customers = fullCVData[cvName] || [];
+        
+        // Hide main dashboard and show detail section
+        document.getElementById('main-dashboard-content').classList.add('hidden');
+        document.getElementById('cv-detail-section').classList.remove('hidden');
+
+        // Update title and table
+        document.getElementById('cv-detail-title').innerText = `${cvName} - थकीत खात्यांची यादी`;
+        const tableBody = document.getElementById('cv-detail-table-body');
+        tableBody.innerHTML = ''; // Clear previous data
+
+        customers.sort((a, b) => parseFloat(b['OVERDUE PRINCIPAL']) - parseFloat(a['OVERDUE PRINCIPAL']));
+
+        customers.forEach(cust => {
+            const row = `<tr>
+                <td>${cust['CUSTOMER NAME']}</td>
+                <td>${cust['LOAN NO']}</td>
+                <td class="risk-high">${formatCurrency(parseFloat(cust['OVERDUE PRINCIPAL']))}</td>
+                <td>${cust['MOBILE NO']}</td>
+                <td>${cust['VILLAGE']}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+        window.scrollTo(0, 0); // Scroll to top
     }
     </script>
 </body>
